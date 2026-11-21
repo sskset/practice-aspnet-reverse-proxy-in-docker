@@ -1,0 +1,92 @@
+.demo {
+  margin: 2rem auto;
+  max-width: 42rem;
+  padding: 0 1.5rem;
+}
+
+.eyebrow {
+  color: #536dfe;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+}
+
+.task-panel {
+  border: 1px solid #d6d9e0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+input[type="text"] {
+  border: 1px solid #aeb5c2;
+  border-radius: 0.375rem;
+  flex: 1;
+  font: inherit;
+  min-width: 0;
+  padding: 0.625rem 0.75rem;
+}
+
+button {
+  background: #3949ab;
+  border: 0;
+  border-radius: 0.375rem;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.625rem 1rem;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-list li {
+  align-items: center;
+  border-top: 1px solid #e5e7ec;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+}
+
+.task-list label {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.task-list .complete span {
+  color: #677080;
+  text-decoration: line-through;
+}
+
+.task-list .delete {
+  background: transparent;
+  color: #9c2635;
+}
+
+.error {
+  color: #9c2635;
+}
+
+.api-note {
+  color: #677080;
+  font-size: 0.875rem;
+}

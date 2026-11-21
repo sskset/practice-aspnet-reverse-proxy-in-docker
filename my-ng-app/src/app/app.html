@@ -1,0 +1,60 @@
+<div class="demo">
+  <header>
+    <p class="eyebrow">Angular + ASP.NET Core</p>
+    <h1>Task board</h1>
+    <p>Manage tasks using the ASP.NET Core REST API.</p>
+  </header>
+
+  <section class="task-panel" aria-labelledby="tasks-heading">
+    <h2 id="tasks-heading">Tasks</h2>
+    <form (ngSubmit)="addTask()">
+      <label class="visually-hidden" for="new-task">New task title</label>
+      <input
+        id="new-task"
+        name="newTaskTitle"
+        type="text"
+        [(ngModel)]="newTaskTitle"
+        maxlength="120"
+        placeholder="What needs to be done?"
+        required
+      />
+      <button type="submit" [disabled]="!newTaskTitle.trim()">Add task</button>
+    </form>
+
+    @if (error(); as errorMessage) {
+      <p class="error" role="alert">{{ errorMessage }}</p>
+    }
+
+    @if (loading()) {
+      <p>Loading tasks...</p>
+    } @else if (tasks().length === 0) {
+      <p>No tasks yet. Add one above.</p>
+    } @else {
+      <ul class="task-list">
+        @for (task of tasks(); track task.id) {
+          <li [class.complete]="task.isComplete">
+            <label>
+              <input
+                type="checkbox"
+                [checked]="task.isComplete"
+                [attr.aria-label]="'Mark ' + task.title + (task.isComplete ? ' incomplete' : ' complete')"
+                (change)="toggleTask(task)"
+              />
+              <span>{{ task.title }}</span>
+            </label>
+            <button
+              class="delete"
+              type="button"
+              [attr.aria-label]="'Delete ' + task.title"
+              (click)="deleteTask(task)"
+            >
+              Delete
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <p class="api-note">Data is loaded from <code>GET /api/tasks</code>.</p>
+  </section>
+</div>
