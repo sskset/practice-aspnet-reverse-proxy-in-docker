@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Docker: Debug my-app",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "/app/my-app.dll",
+      "cwd": "/app",
+      "stopAtEntry": false,
+      "requireExactSource": false,
+      "console": "internalConsole",
+      "justMyCode": false,
+      "sourceFileMap": {
+        "/src/my-app": "${workspaceFolder}/my-app"
+      },
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeArgs": ["exec", "-i", "my-app-debug"],
+        "debuggerPath": "/vsdbg/vsdbg",
+        "quoteArgs": false
+      },
+      "preLaunchTask": "docker-debug-up",
+      "postDebugTask": "docker-debug-down"
+    }
+  ]
+}

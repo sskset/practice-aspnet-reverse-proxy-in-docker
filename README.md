@@ -53,6 +53,46 @@ ASP.NET Core app, and publishes them with the .NET app. In the combined site,
 the browser calls the API on the same origin, so no CORS configuration is
 needed.
 
+## Debug ASP.NET Core in Docker from VS Code
+
+Install Microsoft's C# extension (`ms-dotnettools.csharp`) for VS Code and open
+the repository root as your workspace. Select **Docker: Debug my-app** in the
+Run and Debug panel and press F5. The pre-launch task builds a Debug image
+with `vsdbg` and recreates the container. VS Code launches `/app/my-app.dll`
+under the debugger, so startup breakpoints can be hit too. The post-debug task
+stops the debug container.
+
+To check it, set a breakpoint on `var builder = WebApplication.CreateBuilder(args);`
+in `my-app/Program.cs` and press F5. Continue execution, then set a breakpoint
+inside the `GET /api/tasks/{id}` handler (on `tasks.TryGetValue`) and open
+`https://mysite.com/api/tasks/1`. Request-handler breakpoints only run when a
+matching request is sent. Press F5 again after source edits to rebuild the
+container; this workflow does not enable Hot Reload. This configuration debugs
+C# server code; Angular TypeScript requires a browser debugger and source maps.
+
+If a breakpoint stays hollow, inspect its hover message and the Debug Console.
+Check that `my-app.dll` loaded symbols and that you selected the Docker debug
+configuration. `/src/my-app` in the container's symbols maps to the workspace's
+`my-app` directory through `sourceFileMap` in `.vscode/launch.json`.
+
+The Debug build disables compiler optimization for this app, and the launch
+configuration disables Just My Code. Framework assemblies may still be
+optimized; those messages do not mean this app was built in Release.
+
+`requireExactSource: false` in `.vscode/launch.json` works around a
+[C# extension 2.160.4 regression](https://github.com/dotnet/vscode-csharp/issues/9802):
+it sends unsupported SHA384/SHA512 source checksums to the remote debugger,
+which rejects line breakpoints even though VS Code displays solid red dots.
+This setting skips source checksum validation, so always rebuild with F5 after
+editing code to keep the source and container binaries synchronized. Once your
+C# extension includes the fix, you can remove this setting to restore source
+checksum validation.
+
+The debug container uses the same ports and certificate as the regular
+container. If the regular Compose app is running, the debug task recreates that
+service with the debug image. The normal `docker compose up` workflow continues
+to use the Release image.
+
 ## REST API
 
 The sample task API is available at `https://mysite.com/api/tasks`.

@@ -20,7 +20,14 @@ var nextTaskId = 2;
 var tasksApi = app.MapGroup("/api/tasks");
 tasksApi.MapGet("/", () => Results.Ok(tasks.Values.OrderBy(task => task.Id)));
 tasksApi.MapGet("/{id:int}", (int id) =>
-    tasks.TryGetValue(id, out var task) ? Results.Ok(task) : Results.NotFound());
+{
+    if (!tasks.TryGetValue(id, out var task))
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(task);
+});
 tasksApi.MapPost("/", (CreateTaskRequest request) =>
 {
     var title = request.Title?.Trim();

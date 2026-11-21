@@ -1,0 +1,14 @@
+services:
+  my-app:
+    build:
+      target: debug
+      args:
+        BUILD_CONFIGURATION: Debug
+    container_name: my-app-debug
+    entrypoint: ["sleep", "infinity"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined

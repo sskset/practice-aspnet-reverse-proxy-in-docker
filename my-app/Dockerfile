@@ -17,7 +17,22 @@ RUN dotnet restore "my-app/my-app.csproj"
 COPY my-app/ my-app/
 COPY --from=angular-build /src/my-ng-app/dist/my-ng-app/browser/ my-app/wwwroot/
 WORKDIR /src/my-app
-RUN dotnet publish "my-app.csproj" --configuration Release --output /app/publish --no-restore
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "my-app.csproj" --configuration $BUILD_CONFIGURATION --output /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS debug-tools
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+RUN curl -sSL https://aka.ms/getvsdbgsh -o /tmp/getvsdbg.sh \
+    && bash /tmp/getvsdbg.sh -v latest -l /vsdbg \
+    && rm /tmp/getvsdbg.sh
+
+FROM base AS debug
+WORKDIR /app
+COPY --from=build /app/publish .
+COPY --from=debug-tools /vsdbg /vsdbg
+ENTRYPOINT ["sleep", "infinity"]
 
 FROM base AS final
 WORKDIR /app
